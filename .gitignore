@@ -9,3 +9,14 @@ db.sqlite
 .env
 .env.*
 !.env.example
+
+.build
+.idea
+.vscode
+.git
+
+.build/
+.env
+*.xcodeproj
+Packages/
+.DS_Store
