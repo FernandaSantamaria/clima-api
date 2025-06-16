@@ -13,11 +13,11 @@ try app.run()
 
 
 func printDatabaseConfig() {
-    let host = Environment.get("DATABASE_HOST") ?? "no definido"
-    let port = Environment.get("DATABASE_PORT") ?? "no definido"
-    let user = Environment.get("DATABASE_USERNAME") ?? "no definido"
-    let password = Environment.get("DATABASE_PASSWORD") ?? "no definido"
-    let dbName = Environment.get("DATABASE_NAME") ?? "no definido"
+    let host = Environment.get("DATABASE_HOST") ?? "localhost"
+    let port = Environment.get("DATABASE_PORT") ?? "3310"
+    let user = Environment.get("DATABASE_USERNAME") ?? "root"
+    let password = Environment.get("DATABASE_PASSWORD") ?? "root"
+    let dbName = Environment.get("DATABASE_NAME") ?? "clima_api"
 
     print("""
     Configuración de la base de datos:

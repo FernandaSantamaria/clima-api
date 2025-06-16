@@ -57,9 +57,16 @@ public func configure(_ app: Application) throws {
     try routes(app)
 
     // Mantener la app despierta
-    app.scheduled(every: .seconds(840)) { _ in // 14 minutos
-    app.logger.info("Keep-alive ping")
-}
+   // Mantener la app despierta cada 14 minutos
+    let interval: TimeInterval = 840
+
+    DispatchQueue.global().async {
+        Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
+            app.logger.info("Keep-alive ping")
+        }
+        RunLoop.current.run()
+    }
+
 
 // Configurar CORS
     let corsConfiguration = CORSMiddleware.Configuration(
