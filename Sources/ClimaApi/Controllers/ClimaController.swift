@@ -15,7 +15,7 @@ struct ClimaController: RouteCollection {
         let genero = try req.query.get(String.self, at: "genero")
 
         // Preparar URL para OpenWeather
-        let apiKey = Environment.get("OPENWEATHER_API_KEY") ?? "tu_api_key_de_backup"
+        let apiKey = Environment.get("OPENWEATHER_API_KEY") ?? "4c055129c7b61b72ed27f7ec80bf56a9"
         let encodedLocation = location.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? location
         let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(encodedLocation)&appid=\(apiKey)&units=metric"
         let uri = URI(string: urlString)

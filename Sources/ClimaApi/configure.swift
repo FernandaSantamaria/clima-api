@@ -55,4 +55,17 @@ public func configure(_ app: Application) throws {
     
     // register routes
     try routes(app)
+
+    // Mantener la app despierta
+    app.scheduled(every: .seconds(840)) { _ in // 14 minutos
+    app.logger.info("Keep-alive ping")
+}
+
+// Configurar CORS
+    let corsConfiguration = CORSMiddleware.Configuration(
+        allowedOrigin: .all,
+        allowedMethods: [.GET, .POST, .OPTIONS],
+        allowedHeaders: [.accept, .contentType, .authorization]
+    )
+    app.middleware.use(CORSMiddleware(configuration: corsConfiguration))
 }

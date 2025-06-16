@@ -82,6 +82,8 @@ func routes(_ app: Application) throws {
         let wind = weather.wind.speed
         let lat = weather.coord.lat
         let lon = weather.coord.lon
+        let genero = req.query[String.self, at: "genero"] ?? "mujer"
+
 
         // 2. Obtener índice UV con lat/lon usando HTTP
         let uvRequestURL = URI(string: "http://api.openweathermap.org/data/2.5/uvi?appid=\(apiKey)&lat=\(lat)&lon=\(lon)")
@@ -154,9 +156,9 @@ func routes(_ app: Application) throws {
 
     // Nueva ruta simplificada para cumplir con el ejemplo del error
     app.get("clima", "recomendar") { req async throws -> RecomendacionResponse in
-        guard let ubicacion = req.query[String.self, at: "ubicacion"] else {
-            throw Abort(.badRequest, reason: "Missing 'ubicacion' parameter")
-        }
+    guard let ubicacion = req.query[String.self, at: "ubicacion"] else {
+        throw Abort(.badRequest, reason: "Missing 'ubicacion' parameter")
+    }
         
         // Usar HTTP en lugar de HTTPS para evitar problemas SSL
         let client = req.client
