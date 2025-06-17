@@ -41,10 +41,8 @@ let package = Package(
                 .product(name: "SwiftDotenv", package: "swift-dotenv"),
 
             ],
-
             swiftSettings: swiftSettings
         ),
-        .executableTarget(name: "Run", dependencies: [.target(name: "ClimaApi")]),
         //.testTarget(
           //  name: "ClimaApiTests",
 
@@ -55,7 +53,8 @@ let package = Package(
             //path:"Sources/ClimaApi",
             //swiftSettings: swiftSettings
         //),
-    ]   
+    ] 
+      
 )
 
 var swiftSettings: [SwiftSetting] { [
