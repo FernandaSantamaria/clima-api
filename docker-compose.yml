@@ -3,13 +3,14 @@ version: "3.8"
 services:
   db:
     image: mysql:8
-    volumes:
-      - db_data:/var/lib/mysql
+    
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: clima_db
       MYSQL_USER: root
       MYSQL_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
     ports:
       - "3310:3306"
 
