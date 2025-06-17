@@ -95,7 +95,6 @@ func routes(_ app: Application) throws {
         let wind = weather.wind.speed
         let lat = weather.coord.lat
         let lon = weather.coord.lon
-        let genero = try? req.query.get(String.self, at: "genero") ?? "mujer"
 
 
         // 2. Obtener índice UV con lat/lon usando HTTP
