@@ -8,12 +8,6 @@ import SwiftDotenv
 // configures your application
 public func configure(_ app: Application) throws {
     
-    do {
-        try Dotenv.load()
-        print(".env cargado exitosamente")
-    } catch {
-        print("Error cargando el archivo .env: \(error)")
-    }
 
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
