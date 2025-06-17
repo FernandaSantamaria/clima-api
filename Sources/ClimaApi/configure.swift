@@ -29,8 +29,8 @@ public func configure(_ app: Application) throws {
     
     // Configuración de la base de datos MySQL
     app.databases.use(.mysql(
-        hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-        port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 3306, //cambio de puerto
+        hostname: Environment.get("DATABASE_HOST") ?? "db",
+        port: Environment.get("DATABASE_PORT").flatMap(Int.init) ?? 3306, //cambio de puerto
         username: Environment.get("DATABASE_USERNAME") ?? "root",
         password: Environment.get("DATABASE_PASSWORD") ?? "root",
         database: Environment.get("DATABASE_NAME") ?? "clima_api",
