@@ -55,7 +55,7 @@ struct ClimaController: RouteCollection {
                 ubicacion: location,
                 temperatura: temperatura,
                 condition: condition,
-                outfitID: try outfit.requireID(),
+                outfit: outfit.descripcion, 
                 date: Date()
             )
 
