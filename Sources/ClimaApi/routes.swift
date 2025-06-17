@@ -52,13 +52,26 @@ struct RecomendacionResponse: Content {
 }
 
 func routes(_ app: Application) throws {
+    app.get { req in
+    return "¡Hola desde Vapor en Clouding!"
+}
+
     app.get("weather-outfit") { req async throws -> [String: String] in
+
+        let city = try req.query.get(String.self, at: "city")
+        let genero = try req.query.get(String.self, at: "genero")
+    
+        // 👇 Este logger imprime en consola (útil para debugging)
+        req.logger.info("🔍 Ruta /weather-outfit con city=\(city), genero=\(genero)")
+
         guard let city = req.query[String.self, at: "city"] else {
             throw Abort(.badRequest, reason: "Missing 'city' parameter")
         }
 
         let client = req.client
         let apiKey = Environment.get("OPENWEATHER_API_KEY") ?? "9c99901dd0dee1abf65d4a6cc3217238"
+        req.logger.info("🌤️ Haciendo solicitud al clima...")
+
         let weatherURL = URI(string: "http://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric")
 
         // 1. Obtener clima actual con manejo de errores SSL
@@ -82,7 +95,7 @@ func routes(_ app: Application) throws {
         let wind = weather.wind.speed
         let lat = weather.coord.lat
         let lon = weather.coord.lon
-        let genero = req.query[String.self, at: "genero"] ?? "mujer"
+        let genero = try? req.query.get(String.self, at: "genero") ?? "mujer"
 
 
         // 2. Obtener índice UV con lat/lon usando HTTP
@@ -203,4 +216,5 @@ func routes(_ app: Application) throws {
 
     try app.register(collection: OutfitController())
     try app.register(collection: ClimaController())
+    
 }

@@ -74,5 +74,14 @@ public func configure(_ app: Application) throws {
         allowedMethods: [.GET, .POST, .OPTIONS],
         allowedHeaders: [.accept, .contentType, .authorization]
     )
+
     app.middleware.use(CORSMiddleware(configuration: corsConfiguration))
+
+    app.http.server.configuration.hostname = "0.0.0.0"
+    app.http.server.configuration.port = 8080
+    app.http.server.configuration.hostname = Environment.get("HOST") ?? "0.0.0.0"
+
+
 }
+
+

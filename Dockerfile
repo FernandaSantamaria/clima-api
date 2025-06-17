@@ -3,6 +3,8 @@
 # ================================
 FROM swift:6.0-noble AS build
 
+ENV HOST 0.0.0.0
+
 # Install OS updates
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
