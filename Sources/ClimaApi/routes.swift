@@ -155,40 +155,28 @@ func routes(_ app: Application) throws {
         let isWindy = wind > 10
 
         var outfit = ""
+        var imagenNombre = ""
 
         if temp < 10 {
             outfit = "Usa abrigo, bufanda y botas"
+            imagenNombre = genero == "mujer" ? "frio1M.png" : "frio1H.png"
         } else if temp < 20 {
             outfit = "Chaqueta ligera y jeans"
+            imagenNombre = genero == "mujer" ? "viento3M.png" : "viento1H.png"
         } else if temp < 30 {
             outfit = "Camiseta y pantalón cómodo"
+            imagenNombre = genero == "mujer" ? "calor3M.png" : "calor3H.png"
         } else {
             outfit = "Ropa ligera, gafas de sol y gorra"
+            imagenNombre = genero == "mujer" ? "calor1M.png" : "calor1H.png"
         }
 
-        if isRaining {
-             outfit += ", lleva impermeable o paraguas"
-        }
+    // Construir URL absoluta para la imagen con base en la petición (host + ruta)
+    guard let baseURL = req.url.schemeAndHost else {
+        throw Abort(.internalServerError, reason: "No se pudo obtener la URL base")
+    }
+    let imagenURL = "\(baseURL)/images/outfits/\(imagenNombre)" // Ajusta ruta si tienes subcarpetas genero/temp
 
-        if isWindy {
-            outfit += ", considera una chaqueta cortaviento"
-        }
-
-        // 4. Hora de consulta
-        let nowUTC = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        formatter.timeZone = TimeZone(secondsFromGMT: weather.timezone)
-
-        let localTime = formatter.string(from: nowUTC)
-
-        let consulta = Clima(
-            ubicacion: city,
-            temperatura: temp,
-            condition: condition,
-            outfit: outfit,
-            date: Date()
-        )
         try await consulta.save(on: req.db)
 
         return [
@@ -200,6 +188,8 @@ func routes(_ app: Application) throws {
              "uv": "\(uv)",
              "hora_local": localTime,
              "is_lloviendo": isRaining ? "Sí" : "No"
+             "imagen_url": imagenURL
+
              ]
     }
 
