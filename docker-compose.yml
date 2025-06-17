@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  db:
+  depends_on:
     image: mysql:8
     
     environment:
@@ -22,6 +22,12 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: clima_db
+      DATABASE_PORT: 3310
 
 volumes:
   db_data:

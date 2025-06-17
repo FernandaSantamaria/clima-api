@@ -8,7 +8,6 @@ import SwiftDotenv
 // configures your application
 public func configure(_ app: Application) throws {
     //Aquí estaba el dotenv
-    
 
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))

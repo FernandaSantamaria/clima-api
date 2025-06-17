@@ -56,6 +56,43 @@ func routes(_ app: Application) throws {
     return "¡Hola desde Vapor en Clouding!"
 }
 
+    //new endpoint 
+    app.get("clima", "recomendar") { req async throws -> RecomendacionResponse in
+        let ubicacion = try req.query.get(String.self, at: "ubicacion")
+        req.logger.info("🔍 /clima/recomendar called with ubicacion=\(ubicacion)")
+
+        let apiKey = Environment.get("OPENWEATHER_API_KEY") ?? ""
+        let weatherURL = URI(string: "http://api.openweathermap.org/data/2.5/weather")
+
+        let weatherResponse = try await req.client.get(weatherURL) { get in
+            try get.query.encode(["q": ubicacion, "appid": apiKey, "units": "metric"] )
+        }
+        guard weatherResponse.status == .ok else {
+            req.logger.error("Weather API returned status \(weatherResponse.status)")
+            throw Abort(.badRequest, reason: "Error fetching weather data")
+        }
+        let weather = try weatherResponse.content.decode(WeatherResponse.self)
+
+        // Build recommendation
+        let temp = weather.main.temp
+        let outfit: String = {
+            switch temp {
+            case ..<10: return "Usa abrigo, bufanda y botas"
+            case ..<20: return "Chaqueta ligera y jeans"
+            case ..<30: return "Camiseta y pantalón cómodo"
+            default: return "Ropa ligera, gafas de sol y gorra"
+            }
+        }()
+
+        return RecomendacionResponse(
+            ubicacion: ubicacion,
+            temperatura: temp,
+            condicion: weather.weather.first?.description ?? "No disponible",
+            recomendacion: outfit,
+            error: false
+        )
+    }
+//endpoint existente
     app.get("weather-outfit") { req async throws -> [String: String] in
 
         let city = try req.query.get(String.self, at: "city")
@@ -164,53 +201,6 @@ func routes(_ app: Application) throws {
              "hora_local": localTime,
              "is_lloviendo": isRaining ? "Sí" : "No"
              ]
-    }
-
-    // Nueva ruta simplificada para cumplir con el ejemplo del error
-    app.get("clima", "recomendar") { req async throws -> RecomendacionResponse in
-    guard let ubicacion = req.query[String.self, at: "ubicacion"] else {
-        throw Abort(.badRequest, reason: "Missing 'ubicacion' parameter")
-    }
-        
-        // Usar HTTP en lugar de HTTPS para evitar problemas SSL
-        let client = req.client
-        let apiKey = Environment.get("OPENWEATHER_API_KEY") ?? "9c99901dd0dee1abf65d4a6cc3217238"
-        let weatherURL = URI(string: "http://api.openweathermap.org/data/2.5/weather?q=\(ubicacion)&appid=\(apiKey)&units=metric")
-
-        let weatherResponse: ClientResponse
-        do {
-            weatherResponse = try await client.get(weatherURL)
-        } catch {
-            req.logger.error("Error SSL: \(error)")
-            throw Abort(.internalServerError, reason: "Error SSL: \(String(describing: error))")
-        }
-
-        guard weatherResponse.status == .ok else {
-            throw Abort(.internalServerError, reason: "Error getting weather data")           
-        }
-
-        let weather = try weatherResponse.content.decode(WeatherResponse.self)
-        let temp = weather.main.temp
-        let condition = weather.weather.first?.description ?? "No disponible"
-        
-        var outfit = ""
-        if temp < 10 {
-            outfit = "Usa abrigo, bufanda y botas"
-        } else if temp < 20 {
-            outfit = "Chaqueta ligera y jeans"
-        } else if temp < 30 {
-            outfit = "Camiseta y pantalón cómodo"
-        } else {
-            outfit = "Ropa ligera, gafas de sol y gorra"
-        }
-        
-        return RecomendacionResponse(
-            ubicacion: ubicacion,
-            temperatura: temp,
-            condicion: condition,
-            recomendacion: outfit,
-            error: false
-        )
     }
 
     try app.register(collection: OutfitController())
