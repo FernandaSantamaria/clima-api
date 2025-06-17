@@ -55,9 +55,10 @@ struct ClimaController: RouteCollection {
                 ubicacion: location,
                 temperatura: temperatura,
                 condition: condition,
-                outfit: outfit.descripcion,
+                outfitID: try outfit.requireID(),
                 date: Date()
             )
+
             try await climaGuardado.save(on: req.db)
 
             // Crear respuesta

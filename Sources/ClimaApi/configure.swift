@@ -38,8 +38,8 @@ public func configure(_ app: Application) throws {
     ), as: .mysql)
     
     // Agregar migraciones
-    app.migrations.add(CreateClima())
-    app.migrations.add(CreateOutfit())
+        app.migrations.add(CreateOutfit())
+        app.migrations.add(CreateClima())
 
 
     //Ingresar a las imagenes de outfits
