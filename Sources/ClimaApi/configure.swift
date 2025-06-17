@@ -31,7 +31,7 @@ public func configure(_ app: Application) throws {
     app.databases.use(.mysql(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
         port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 3306, //cambio de puerto
-        username: Environment.get("DATABASE_USERNAME") ?? "clima_user",
+        username: Environment.get("DATABASE_USER") ?? "clima_user",
         password: Environment.get("DATABASE_PASSWORD") ?? "clima_pass",
         database: Environment.get("DATABASE_NAME") ?? "clima_db",
         tlsConfiguration: .forClient(certificateVerification: .none)
