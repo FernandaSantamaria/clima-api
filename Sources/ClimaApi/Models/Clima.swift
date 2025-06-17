@@ -16,20 +16,20 @@ final class Clima : Model, Content, @unchecked Sendable  {
     @Field(key: "condition")
     var condition: String
 
-    @Parent(key: "outfit")
-    var outfit: Outfit 
+    @Field(key: "outfit")
+    var outfit: String
 
     @Field(key: "date")
     var date: Date
 
     init(){}
     
-    init(id: UUID? = nil, ubicacion: String, temperatura: Double, condition: String, outfit: String, date: Date = Date() ){
+    init(id: UUID? = nil, ubicacion: String, temperatura: Double, condition: String, outfit: String, date: Date = Date()){
         self.id = id
         self.ubicacion = ubicacion
         self.temperatura = temperatura
         self.condition = condition
-        self.$outfit.id = outfitID
+        self.outfit=outfit
         self.date = date
 
 

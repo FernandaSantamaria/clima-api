@@ -7,7 +7,7 @@ struct CreateClima: AsyncMigration {
             .field("ubicacion", .string, .required)
             .field("temperatura", .double, .required)
             .field("condition", .string, .required)
-            .field("outfit", .uuid, .references("outfits", "id"))
+            .field("outfit", .string, .required)
             .field("date", .datetime, .required)
             .create()
     }
