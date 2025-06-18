@@ -51,6 +51,7 @@ struct RecomendacionResponse: Content {
     let error: Bool
 }
 
+//check conexion con clouding
 func routes(_ app: Application) throws {
     app.get { req in
     return "¡Hola desde Vapor en Clouding!"
@@ -59,7 +60,7 @@ func routes(_ app: Application) throws {
     //new endpoint 
     app.get("clima", "recomendar") { req async throws -> RecomendacionResponse in
         let ubicacion = try req.query.get(String.self, at: "ubicacion")
-        req.logger.info("🔍 /clima/recomendar called with ubicacion=\(ubicacion)")
+        req.logger.info("/clima/recomendar called with ubicacion=\(ubicacion)")
 
         let apiKey = Environment.get("OPENWEATHER_API_KEY") ?? ""
         let weatherURL = URI(string: "http://api.openweathermap.org/data/2.5/weather")
@@ -73,7 +74,6 @@ func routes(_ app: Application) throws {
         }
         let weather = try weatherResponse.content.decode(WeatherResponse.self)
 
-        // Build recommendation
         let temp = weather.main.temp
         let outfit: String = {
             switch temp {
@@ -92,22 +92,22 @@ func routes(_ app: Application) throws {
             error: false
         )
     }
-//endpoint existente
+
     app.get("weather-outfit") { req async throws -> [String: String] in
 
         let city = try req.query.get(String.self, at: "city")
         let genero = try req.query.get(String.self, at: "genero")
     
-        // 👇 Este logger imprime en consola (útil para debugging)
         req.logger.info("🔍 Ruta /weather-outfit con city=\(city), genero=\(genero)")
 
+        //DEBBUUUUUUG ing
         guard let city = req.query[String.self, at: "city"] else {
             throw Abort(.badRequest, reason: "Missing 'city' parameter")
         }
 
         let client = req.client
         let apiKey = Environment.get("OPENWEATHER_API_KEY") ?? "9c99901dd0dee1abf65d4a6cc3217238"
-        req.logger.info("🌤️ Haciendo solicitud al clima...")
+        req.logger.info("Haciendo solicitud al clima...")
 
         let weatherURL = URI(string: "http://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric")
 
@@ -150,7 +150,7 @@ func routes(_ app: Application) throws {
 
         let uv = try uvResponse.content.decode(UVResponse.self).value
 
-        // 3. Generar recomendación de outfit
+        // 3. Generar recomendación de outfit con imagen
         let isRaining = weather.rain?.oneHour ?? 0 > 0
         let isWindy = wind > 10
 
@@ -175,7 +175,7 @@ func routes(_ app: Application) throws {
     guard let baseURL = req.url.schemeAndHost else {
         throw Abort(.internalServerError, reason: "No se pudo obtener la URL base")
     }
-    let imagenURL = "\(baseURL)/images/outfits/\(imagenNombre)" // Ajusta ruta si tienes subcarpetas genero/temp
+    let imagenURL = "\(baseURL)/images/outfits/\(imagenNombre)"
 
         try await consulta.save(on: req.db)
 
@@ -187,7 +187,7 @@ func routes(_ app: Application) throws {
              "viento": "\(wind) m/s",
              "uv": "\(uv)",
              "hora_local": localTime,
-             "is_lloviendo": isRaining ? "Sí" : "No"
+             "is_lloviendo": isRaining ? "Sí" : "No",
              "imagen_url": imagenURL
 
              ]

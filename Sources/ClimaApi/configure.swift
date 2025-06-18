@@ -5,18 +5,12 @@ import NIOSSL
 import SwiftDotenv
 
 
-// configures your application
 public func configure(_ app: Application) throws {
-    //Aquí estaba el dotenv
 
-    // uncomment to serve files from /Public folder
-    // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-    
     // Configuración SSL para el cliente HTTP
     var tlsConfiguration = TLSConfiguration.makeClientConfiguration()
     tlsConfiguration.certificateVerification = .none // Solo para desarrollo
     
-    // Si estás en producción, usa verificación completa:
     if app.environment == .production {
         tlsConfiguration.certificateVerification = .fullVerification
     }
@@ -30,7 +24,7 @@ public func configure(_ app: Application) throws {
     // Configuración de la base de datos MySQL
     app.databases.use(.mysql(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-        port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 3306, //cambio de puerto
+        port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 3306, //cambio de puerto de 3310-3306 con bd en ubuntu
         username: Environment.get("DATABASE_USER") ?? "clima_user",
         password: Environment.get("DATABASE_PASSWORD") ?? "clima_pass",
         database: Environment.get("DATABASE_NAME") ?? "clima_db",
@@ -38,6 +32,7 @@ public func configure(_ app: Application) throws {
     ), as: .mysql)
     
     // Agregar migraciones
+    //Primero outfit porque clima depende de outfit
         app.migrations.add(CreateOutfit())
         app.migrations.add(CreateClima())
 

@@ -8,13 +8,13 @@ struct ClimaController: RouteCollection {
     }
 
     func getClimaYRecomendarOutfit(req: Request) async throws -> OutfitResponse {
-        // Obtener parámetros de la query
+        // Obtener parámetros del query
         guard let location = try? req.query.get(String.self, at: "ubicacion") else {
             throw Abort(.badRequest, reason: "Falta el parámetro 'ubicacion'")
         }
         let genero = try req.query.get(String.self, at: "genero")
 
-        // Preparar URL para OpenWeather
+        //URL para consumir OpenWeather
         let apiKey = Environment.get("OPENWEATHER_API_KEY") ?? "9c99901dd0dee1abf65d4a6cc3217238"
         let encodedLocation = location.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? location
         let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(encodedLocation)&appid=\(apiKey)&units=metric"
@@ -46,7 +46,7 @@ struct ClimaController: RouteCollection {
                 throw Abort(.notFound, reason: "No se encontró outfit para clima \(climaClasificado) y género \(genero)")
             }
 
-            // Construir URL de imagen (ajústala según tu entorno)
+            // Construir URL de imagen en puerto 8080 para que sea publica
             let baseURL = Environment.get("BASE_URL") ?? "http://localhost:8080"
             let imagenURL = "\(baseURL)/imagenes/outfits/\(climaClasificado)/\(genero.lowercased())/\(outfit.imagen)"
 
@@ -79,7 +79,7 @@ struct ClimaController: RouteCollection {
         }
     }
 
-    // Clasificación de clima personalizada
+    // Clasificación de clima 
     func clasificarClima(condition: String, temperatura: Double) -> String {
         if temperatura < 10 {
             return "frio"
